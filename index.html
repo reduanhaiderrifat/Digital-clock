@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Clock Animation</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div id="clock">
+        <div id="hrDots" style="--clr:#ff2972;"></div>
+        <div id="minDots" style="--clr:#fee800;"></div>
+        <div id="secDots" style="--clr:#04fc43;"></div>
+    </div>
+    <script>
+        function clock() {
+            let secDots = document.getElementById('secDots');
+            let minDots = document.getElementById('minDots');
+            let hrDots = document.getElementById('hrDots');
+    
+            var date = new Date();
+            var hours = date.getHours() % 12 || 12; // Convert to 12-hour format
+            var minutes = date.getMinutes();
+            var seconds = date.getSeconds();
+            var ampm = date.getHours() >= 12 ? 'PM' : 'AM'; // Determine AM or PM
+
+            // Generate the second dots
+            var secondsDots = '';
+            for (var i = 1; i <= 60; i++) {
+                var rotation = i * 6;
+                var isActive = i <= seconds; // This checks if the dot should be green
+    
+                if (isActive) {
+                    secondsDots += '<div class="dot active" style="transform:rotate(' + rotation + 'deg); background: var(--clr); box-shadow: 0 0 10px var(--clr), 0 0 20px var(--clr), 0 0 30px var(--clr);"></div>';
+                } else {
+                    secondsDots += '<div class="dot" style="transform:rotate(' + rotation + 'deg); background: #555;"></div>';
+                }
+            }
+    
+            // Generate the minute dots
+            var minutesDots = '';
+            for (var i = 1; i <= 60; i++) {
+                var rotation = i * 6;
+                var isActive = i <= minutes; // This checks if the dot should be yellow
+    
+                if (isActive) {
+                    minutesDots += '<div class="dot active" style="transform:rotate(' + rotation + 'deg); background: var(--clr); box-shadow: 0 0 10px var(--clr), 0 0 20px var(--clr), 0 0 30px var(--clr);"></div>';
+                } else {
+                    minutesDots += '<div class="dot" style="transform:rotate(' + rotation + 'deg); background: #555;"></div>';
+                }
+            }
+
+            // Generate the hour dots (12-hour format, so we multiply hours by 5 to fit 60 dots)
+            var hoursDots = '';
+            for (var i = 1; i <= 12; i++) {
+                var rotation = i * 30;
+                var isActive = i === hours; // Color only the specific hour dot
+    
+                if (isActive) {
+                    hoursDots += '<div class="dot active" style="transform:rotate(' + rotation + 'deg); background: var(--clr); box-shadow: 0 0 10px var(--clr), 0 0 20px var(--clr), 0 0 30px var(--clr);"></div>';
+                } else {
+                    hoursDots += '<div class="dot" style="transform:rotate(' + rotation + 'deg); background: #555;"></div>';
+                }
+            }
+    
+            // Insert the generated dots and labels into the clock
+            secDots.innerHTML = secondsDots + '<h2>' + zero(seconds) + '<br><span>Seconds</span></h2>';
+            minDots.innerHTML = minutesDots + '<h2>' + zero(minutes) + '<br><span>Minutes</span></h2>';
+            hrDots.innerHTML = hoursDots + '<h2>' + zero(hours) + '<br><span>Hours</span></h2>' +
+                '<div class="ampm">' + ampm + '</div>'; // Add AM/PM label
+        }
+    
+        function zero(number) {
+            return number < 10 ? '0' + number : number;
+        }
+    
+        clock();  // Initial call to display the clock immediately
+        setInterval(clock, 1000);  // Update the clock every second
+    </script>
+</body>
+</html>
